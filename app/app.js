@@ -10,46 +10,28 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 app.get("/", function (req, res) {
-  var conexion = mysql.createConnection({
-    host: "db",
-    database: "pweb_pizarra",
-    user: "root",
-    password: "pwdRoot",
-  });
-
-  conexion.connect(function (err) {
-    if (err) {
-      console.error("Error de conexion: " + err.stack);
-      return;
-    }
-    console.log("Conectado con el identificador " + conexion.threadId);
-  });
-
-  res.send("Holaasdfsaf");
+  res.send("Servidor de imagenes corriendo");
 });
 
-app.get("/otro", function (req, res) {
-  res.send("Holaasdfsaf");
-});
-
-app.post("/createImg", function (req, res) {
+app.post("/saveImage", function (req, res) {
+  var id = req.body.id;
   var name = req.body.name;
   var data = req.body.data;
 
   let conn = connection();
 
-  conn.query("SELECT * FROM images", function (error, results, fields) {
-    if (error) throw error;
-
-    results.forEach((result) => {
-      console.log(result);
-    });
-  });
+  conn.query(
+    "INSERT INTO images (id, name, data) values (?,?,?)",
+    [id, name, data],
+    function (error, results) {
+      if (error) throw error;
+    }
+  );
   conn.end();
   res.send("terminado");
 });
 
-app.post("/getAll", function (req, res) {
+app.post("/getAllImages", function (req, res) {
   let conn = connection();
   let images = [];
   conn.query("SELECT * FROM images", function (error, results) {
@@ -60,7 +42,7 @@ app.post("/getAll", function (req, res) {
     });
     res.send(images);
   });
-  console.log("cerrando coneecxion");
+  console.log("connection close()");
   conn.end();
 });
 
