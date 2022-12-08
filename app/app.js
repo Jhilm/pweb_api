@@ -10,6 +10,8 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 app.get("/", function (req, res) {
+  let conn = connection();
+  conn.end();
   res.send("Servidor de imagenes corriendo");
 });
 
